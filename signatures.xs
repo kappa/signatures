@@ -170,6 +170,11 @@ handle_proto (pTHX_ OP *op, void *user_data) {
 			continue;
 		}
 
+		if (isSPACE (tmp2[0])) {
+			tmp2++;
+			continue;
+		}
+
 		if (*tmp2 != *s) {
 			return op;
 		}
@@ -211,8 +216,9 @@ handle_proto (pTHX_ OP *op, void *user_data) {
 						attr_start++;
 					}
 
-					ret = op;
-					sv_setpv (op_sv, tmp2);
+					ret = newSVOP (OP_CONST, 0, newSVpvn (tmp2, strlen (tmp2)));
+					op_free (op);
+					op = ret;
 				}
 			}
 			else if (strEQ (tmpbuf, "proto")) {
